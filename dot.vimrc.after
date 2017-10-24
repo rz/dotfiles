@@ -1,0 +1,55 @@
+set guifont=Inconsolata:h14
+
+" disable bells
+set noerrorbells visualbell t_vb=
+autocmd GUIEnter * set visualbell t_vb=
+
+" color scheme
+color freya
+
+" make ctrl-e and ctrl-a work like everywhere else
+inoremap <C-e> <Esc>A
+inoremap <C-a> <Esc>I
+
+" so that we can use zR and zM to fold code
+set foldmethod=indent
+" so that folds are open by default
+set foldlevelstart=20
+
+" to stop doing :noh all the time
+"This unsets the "last search pattern" register by hitting return
+nnoremap <CR> :noh<CR><CR>
+
+
+
+" this is for Merlin (ocaml ide lib) to work with vim
+filetype plugin indent on
+syntax enable
+
+" Vim needs to be built with Python scripting support, and must be
+" able to find Merlin's executable on PATH.
+if executable('ocamlmerlin') && has('python')
+  let s:ocamlmerlin = substitute(system('opam config var share'), '\n$', '', '''') . "/ocamlmerlin"
+  execute "set rtp+=".s:ocamlmerlin."/vim"
+  execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
+endif
+
+" this is for ocp-indent (ocaml)
+set rtp^="'"$(opam config var ocp-indent:share)"'/vim"
+
+" this is for NERD commenter
+let g:NERDDefaultAlign = 'left' " so that comments are left-aligned instead of following the code indentation
+
+" so that text in markdown and txt files is always flowed to width 90
+au BufRead,BufNewFile *.{md,txt} setlocal textwidth=90
+
+" to autosave when focus is lost
+:au FocusLost * :wa
+" and so the autosave does not complain about buffers without names
+:au FocusLost * silent! wa
+
+" enable jsx highlighting for .js files
+let g:jsx_ext_required = 0
+
+" enable eslint in vim
+let g:syntastic_javascript_checkers = ['eslint']
